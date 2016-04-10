@@ -3,36 +3,36 @@
 //
 // Constants
 //
-var STANDARD_HIGHWATER = 70;
-var STANDARD_INTERVAL = 500;
+let STANDARD_HIGHWATER = 70;
+let STANDARD_INTERVAL = 500;
 
 // A dampening factor.  When determining average calls per second or
 // current lag, we weigh the current value against the previous value 2:1
 // to smooth spikes.
 // See https://en.wikipedia.org/wiki/Exponential_smoothing
-var SMOOTHING_FACTOR = 1/3;
+let SMOOTHING_FACTOR = 1/3;
 
 //
 // Vars
 //
 
-var lastTime = Date.now();
-var highWater = STANDARD_HIGHWATER;
-var interval = STANDARD_INTERVAL;
-var smoothingFactor = SMOOTHING_FACTOR;
-var currentLag = 0;
-var checkInterval;
+let lastTime = Date.now();
+let highWater = STANDARD_HIGHWATER;
+let interval = STANDARD_INTERVAL;
+let smoothingFactor = SMOOTHING_FACTOR;
+let currentLag = 0;
+let checkInterval;
 
 
 /**
  * Main export function.
  * @return {Boolean} True if node process is too busy.
  */
-var toobusy = function(){
+let toobusy = function(){
   // If current lag is < 2x the highwater mark, we don't always call it 'too busy'. E.g. with a 50ms lag
   // and a 40ms highWater (1.25x highWater), 25% of the time we will block. With 80ms lag and a 40ms highWater,
   // we will always block.
-  var pctToBlock = (currentLag - highWater) / highWater;
+  let pctToBlock = (currentLag - highWater) / highWater;
   return Math.random() < pctToBlock;
 };
 
@@ -126,8 +126,8 @@ toobusy.started = function() {
  */
 function start() {
   checkInterval = setInterval(function(){
-    var now = Date.now();
-    var lag = now - lastTime;
+    let now = Date.now();
+    let lag = now - lastTime;
     lag = Math.max(0, lag - interval);
     // Dampen lag. See SMOOTHING_FACTOR initialization at the top of this file.
     currentLag = smoothingFactor * lag + (1 - smoothingFactor) * currentLag;
