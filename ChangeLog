@@ -1,3 +1,18 @@
+0.4.2
+  * version bump
+
+0.4.1
+  * version bump
+
+0.4.0
+  * refactoring
+  * new tests
+  * added `toobusy.interval()`
+  * many comments
+
+0.3.1
+  * fix package.json plural for repository
+
 0.3.0 -
   * full JS implementation, removed c code & bindings
   * example bugfixes

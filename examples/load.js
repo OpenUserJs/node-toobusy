@@ -1,35 +1,37 @@
-var http = require('http');
+'use strict';
+
+let http = require('http');
 
 // a little load generate client that generates constant load over
 // even if the server cannot keep up
 
-var running = 0;
-var twoHundred = 0;
-var fiveOhThree = 0;
-var yucky = 0;
-var avg = 0;
+let running = 0;
+let twoHundred = 0;
+let fiveOhThree = 0;
+let yucky = 0;
+let avg = 0;
 
 // how many requests per second should we run?
 const rps = (process.env['RPS'] || 40) / 40;
-var curRPS = rps;
-var started = 0;
+let curRPS = rps;
+let started = 0;
 const startTime = new Date();
-var lastMark = startTime;
+let lastMark = startTime;
 
-var ivalnum = 0;
+let ivalnum = 0;
 
 setInterval(function() {
   ivalnum++;
   function startOne() {
     started++;
     running++;
-    var start = new Date();
-    var endOrError = false;
+    let start = new Date();
+    let endOrError = false;
     function cEndOrError() {
       if (endOrError) console.log("end AND error");
       endOrError = true;
     }
-    var req = http.get({
+    let req = http.get({
       host: '127.0.0.1',
       port: 3000,
       agent: false,
@@ -55,11 +57,11 @@ setInterval(function() {
     });
   }
 
-  for (var i = 0; i < curRPS ; i++) startOne();
+  for (let i = 0; i < curRPS ; i++) startOne();
 
   // report and scale up every 2s
   if (!(ivalnum % (40 * 2))) {
-    var delta = (new Date() - lastMark) / 1000.0 ;
+    let delta = (new Date() - lastMark) / 1000.0 ;
     console.log(Math.round((new Date() - startTime) / 1000.0),
                 Math.round(started / delta),
                 Math.round(twoHundred / delta),

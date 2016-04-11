@@ -5,7 +5,7 @@
 `toobusy-js` is a fork of lloyd's [node-toobusy](http://github.com/lloyd/node-toobusy) that removes native dependencies
 in favor of using the `unref` introduced in [node 0.9.1](http://blog.nodejs.org/2012/08/28/node-v0-9-1-unstable/).
 
-This package is a simpler install without native dependencies, but requires node >= 0.9.1.
+This package is a simpler install without native dependencies, but requires node >= 4.0.0.
 
 ## Node-Toobusy
 
@@ -30,23 +30,23 @@ and continue serving as many requests as possible.
 
 ## installation
 
-```
+``` sh-session
 npm install toobusy-js
 ```
 
 
 ## usage
 
-```javascript
-var toobusy = require('toobusy-js'),
+```js
+let toobusy = require('toobusy-js'),
     express = require('express');
 
-var app = express();
+let app = express();
 
 // middleware which blocks requests when we're too busy
 app.use(function(req, res, next) {
   if (toobusy()) {
-    res.send(503, "I'm busy right now, sorry.");
+    res.status(503).send("I'm busy right now, sorry.");
   } else {
     next();
   }
@@ -54,18 +54,18 @@ app.use(function(req, res, next) {
 
 app.get('/', function(req, res) {
   // processing the request requires some work!
-  var i = 0;
+  let i = 0;
   while (i < 1e5) i++;
   res.send("I counted to " + i);
 });
 
-var server = app.listen(3000);
+let server = app.listen(3000);
 
 process.on('SIGINT', function() {
   server.close();
   // calling .shutdown allows your process to exit normally
   toobusy.shutdown();
-  process.exit();
+  process.exit(0);
 });
 ```
 
@@ -75,8 +75,8 @@ The one knob that the library exposes is "maximum lag".
 This number represents the maximum amount of time in milliseconds that the event queue is behind,
 before we consider the process *too busy*.
 
-```javascript
-var toobusy = require('toobusy-js');
+```js
+let toobusy = require('toobusy-js');
 
 // Set maximum lag to an aggressive value.
 toobusy.maxLag(10);
@@ -86,7 +86,7 @@ toobusy.maxLag(10);
 toobusy.interval(250);
 
 // Get current maxLag or interval setting by calling without parameters.
-var currentMaxLag = toobusy.maxLag(), interval = toobusy.interval();
+let currentMaxLag = toobusy.maxLag(), interval = toobusy.interval();
 ```
 
 The default maxLag value is 70ms, and the default check interval is 500ms.

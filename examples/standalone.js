@@ -1,17 +1,19 @@
-// first, we want to be able to get cpu usage stats in terms of percentage
-var loaded = false;
-var toobusy = require('..');
+'use strict';
 
-var work = 524288;
+// first, we want to be able to get cpu usage stats in terms of percentage
+let loaded = false;
+let toobusy = require('..');
+
+let work = 524288;
 
 function worky() {
-  var howBusy = toobusy();
+  let howBusy = toobusy();
   if (howBusy) {
     work /= 4;
     console.log("I can't work! I'm too busy:", toobusy.lag() + "ms behind");
   }
   work *= 2;
-  for (var i = 0; i < work;) i++;
+  for (let i = 0; i < work;) i++;
   console.log("worked:",  work);
 };
 
@@ -20,4 +22,5 @@ var interval = setInterval(worky, 100);
 process.on('SIGINT', function() {
   clearInterval(interval);
   toobusy.shutdown();
+  process.exit(0);
 });

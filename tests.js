@@ -12,11 +12,11 @@ function tightWork(duration) {
 /*global describe, it, beforeEach, afterEach */
 describe('the library', function() {
   it('should export a couple functions', function() {
-    (toobusy).should.be.a('function');
-    (toobusy.maxLag).should.be.a('function');
-    (toobusy.shutdown).should.be.a('function');
-    (toobusy.interval).should.be.a('function');
-    (toobusy.shutdown).should.be.a('function');
+    (toobusy).should.be.a.function;
+    (toobusy.maxLag).should.be.a.function;
+    (toobusy.shutdown).should.be.a.function;
+    (toobusy.interval).should.be.a.function;
+    (toobusy.shutdown).should.be.a.function;
     (toobusy).should.not.have.property('start');
   });
   it('should start automatically', function() {

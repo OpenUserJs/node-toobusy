@@ -1,4 +1,6 @@
-var http = require('http'),
+'use strict';
+
+let http = require('http'),
  toobusy = require('..');
 
 console.log("Maximum allowed event loop lag: " + toobusy.maxLag(50) + "ms");
@@ -16,7 +18,7 @@ function processRequest(res, num, startTime) {
     res.end('I counted to ' + num + ' in ' + (new Date() - startTime) + 'ms\n');
   } else {
     // 1ms of computation
-    var targetTime = (new Date() - startTime) + 1;
+    let targetTime = (new Date() - startTime) + 1;
     while (new Date() - startTime < targetTime);
     processRequest(res, num + 1, startTime);
   }

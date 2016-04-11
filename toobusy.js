@@ -3,14 +3,14 @@
 //
 // Constants
 //
-let STANDARD_HIGHWATER = 70;
-let STANDARD_INTERVAL = 500;
+const STANDARD_HIGHWATER = 70;
+const STANDARD_INTERVAL = 500;
 
 // A dampening factor.  When determining average calls per second or
 // current lag, we weigh the current value against the previous value 2:1
 // to smooth spikes.
 // See https://en.wikipedia.org/wiki/Exponential_smoothing
-let SMOOTHING_FACTOR = 1/3;
+const SMOOTHING_FACTOR = 1/3;
 
 //
 // Vars
@@ -20,7 +20,7 @@ let lastTime = Date.now();
 let highWater = STANDARD_HIGHWATER;
 let interval = STANDARD_INTERVAL;
 let smoothingFactor = SMOOTHING_FACTOR;
-let currentLag = 0;
+var currentLag = 0;
 let checkInterval;
 
 
