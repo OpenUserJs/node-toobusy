@@ -1,8 +1,8 @@
 {
-  "name": "toobusy-js",
+  "name": "toobusy-js-harmony",
   "description": "Don't fall over when your Node.JS server is too busy. Now without native dependencies!",
   "homepage": "https://github.com/STRML/node-toobusy",
-  "version": "0.4.3+harmony",
+  "version": "0.4.3",
   "dependencies": {},
   "devDependencies": {
     "mocha": "2.4.5",
