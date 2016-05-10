@@ -89,9 +89,56 @@ describe('toobusy()', function() {
     }
     load();
   });
+
+  describe('lag events', function () {
+    it('should not emit lag events if the lag is less than the configured threshold',
+        testLagEvent(100, 50, false));
+    it('should emit lag events if the lag is greater than the configured threshold',
+        testLagEvent(50, 100, true));
+    it('should emit lag events if lag occurs and no threshold is specified',
+        testLagEvent(undefined, 100, true));
+
+    function testLagEvent(threshold, work, expectFire) {
+      return function (done) {
+        var calledDone = false;
+
+        toobusy.onLag(function (lag) {
+          if (calledDone) {
+            return;
+          }
+
+          if (!expectFire) {
+            calledDone = true;
+            done(new Error('lag event fired unexpectedly'));
+            return;
+          }
+
+          should.exist(lag);
+          lag.should.be.above(threshold || 0);
+
+          calledDone = true;
+          done();
+        }, threshold);
+
+        if (!expectFire) {
+          setTimeout(function () {
+            if (!calledDone) {
+              calledDone = true;
+              done();
+            }
+          }, work + threshold);
+        }
+
+        tightWork(work);
+      }
+    }
+  });
 });
 
 describe('smoothingFactor', function() {
+  //Sometimes the default 2s timeout is hit on this suite, raise to 10s.
+  this.timeout(10 * 1000);
+
   beforeEach(function() {
     toobusy.maxLag(10);
     toobusy.interval(250);

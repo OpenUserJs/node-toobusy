@@ -1,10 +1,13 @@
 'use strict';
 
+let events = require('events');
+
 //
 // Constants
 //
 const STANDARD_HIGHWATER = 70;
 const STANDARD_INTERVAL = 500;
+const LAG_EVENT = "LAG_EVENT";
 
 // A dampening factor.  When determining average calls per second or
 // current lag, we weigh the current value against the previous value 2:1
@@ -20,9 +23,10 @@ let lastTime = Date.now();
 let highWater = STANDARD_HIGHWATER;
 let interval = STANDARD_INTERVAL;
 let smoothingFactor = SMOOTHING_FACTOR;
-var currentLag = 0;
+let currentLag = 0;
 let checkInterval;
-
+let lagEventThreshold = -1;
+let eventEmitter = new events.EventEmitter();
 
 /**
  * Main export function.
@@ -122,6 +126,23 @@ toobusy.started = function() {
 };
 
 /**
+ * Registers an event listener for lag events,
+ * optionally specify a minimum value threshold for events being emitted
+ * @param {Function}  fn  Function of form onLag(value: number) => void
+ * @param {number=0}  threshold Optional minimum lag value for events to be emitted
+ */
+toobusy.onLag = function (fn, threshold) {
+
+  if (typeof threshold === "number") {
+    lagEventThreshold = threshold;
+  } else {
+    lagEventThreshold = 0;
+  }
+
+  eventEmitter.on(LAG_EVENT, fn);
+};
+
+/**
  * Private - starts checking lag.
  */
 function start() {
@@ -132,6 +153,11 @@ function start() {
     // Dampen lag. See SMOOTHING_FACTOR initialization at the top of this file.
     currentLag = smoothingFactor * lag + (1 - smoothingFactor) * currentLag;
     lastTime = now;
+
+    if (lagEventThreshold !== -1 && currentLag > lagEventThreshold) {
+      eventEmitter.emit(LAG_EVENT, currentLag);
+    }
+
   }, interval);
 
   // Don't keep process open just for this timer.
